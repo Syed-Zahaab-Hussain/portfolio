@@ -1,15 +1,9 @@
 import React from 'react';
-import { Download, Award, Globe, ArrowUpRight, Code2 } from 'lucide-react';
-import { Reveal } from './ui/Reveal';
-import { Stat } from '../types';
+import { Download, ArrowUpRight, Code2 } from 'lucide-react';
+import { Reveal } from '@/components/ui/Reveal';
+import { stats } from '@/data/stats';
 
 const About: React.FC = () => {
-  const stats: Stat[] = [
-    { icon: Code2, value: '4', label: 'TOTAL PROJECTS', subLabel: 'Innovative web & mobile solutions crafted' },
-    { icon: Award, value: '3', label: 'CERTIFICATES', subLabel: 'Professional skills validated' },
-    { icon: Globe, value: '3', label: 'YEARS OF EXPERIENCE', subLabel: 'Continuous learning journey' },
-  ];
-
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
       <Reveal width="100%">
@@ -19,7 +13,7 @@ const About: React.FC = () => {
               About Me
             </span>
           </h2>
-          
+
           <div className="max-w-3xl space-y-6 text-gray-300 text-lg leading-relaxed mb-10">
              <p>
                 Hello, I'm <span className="font-bold text-white">Syed Zahaab Hussain</span>, passionate about building smart and scalable web & mobile applications. I've completed a full-stack development course and constantly explore new technologies to refine my skills.

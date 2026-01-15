@@ -1,70 +1,15 @@
+"use client";
+
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { ExternalLink, Info, Code2, Award, Database, Eye } from 'lucide-react';
-import { Reveal } from './ui/Reveal';
-import { Project, Certificate } from '../types';
+import { Reveal } from '@/components/ui/Reveal';
+import { projects } from '@/data/projects';
+import { certificates } from '@/data/certificates';
+import { techStackItems } from '@/data/techStack';
 
 const Portfolio: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'projects' | 'certificates' | 'stack'>('projects');
-
-  const projects: Project[] = [
-    {
-      id: 1,
-      title: "IntervueAI",
-      description: "Real-time mock interviews with AI, no forms or clicks just natural personalized conversation.",
-      tech: ["Next.js", "OpenAI", "Tailwind"],
-      image: "https://picsum.photos/id/48/600/400",
-      demoLink: "#"
-    },
-    {
-      id: 2,
-      title: "Blendy",
-      description: "A social app where you can connect in real-time, log in with one click, share posts and more.",
-      tech: ["React", "Firebase", "Redux"],
-      image: "https://picsum.photos/id/180/600/400",
-      demoLink: "#"
-    },
-    {
-      id: 3,
-      title: "WATCHit",
-      description: "A video streaming app made for easy, personal entertainment and everything you need.",
-      tech: ["React", "Node.js", "MongoDB"],
-      image: "https://picsum.photos/id/21/600/400",
-      demoLink: "#"
-    }
-  ];
-
-  const certificates: Certificate[] = [
-    {
-        id: 1,
-        title: "Infosys React Native",
-        image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=800&auto=format&fit=crop"
-    },
-    {
-        id: 2,
-        title: "Udemy Web Development",
-        image: "https://images.unsplash.com/photo-1635350736475-c8cef4b21906?q=80&w=800&auto=format&fit=crop"
-    },
-    {
-        id: 3,
-        title: "Unnati Soft Skills",
-        image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=800&auto=format&fit=crop"
-    }
-  ];
-
-  const techStackItems = [
-    { name: 'HTML', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg' },
-    { name: 'CSS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg' },
-    { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
-    { name: 'Tailwind CSS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg' },
-    { name: 'Express JS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg', invert: true },
-    { name: 'Node JS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
-    { name: 'React + Native', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
-    { name: 'MongoDB', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg' },
-    { name: 'JWT', icon: 'https://jwt.io/img/pic_logo.svg' },
-    { name: 'PostgreSQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg' },
-    { name: 'TypeScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg' },
-    { name: 'Docker', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg' },
-  ];
 
   return (
     <div className="w-full">
@@ -124,17 +69,19 @@ const Portfolio: React.FC = () => {
                     <Reveal key={project.id} delay={index * 0.1} width="100%">
                         <div className="group rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
                             <div className="relative h-48 overflow-hidden">
-                                <img 
-                                    src={project.image} 
-                                    alt={project.title} 
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                <Image
+                                    src={project.image}
+                                    alt={project.title}
+                                    fill
+                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent opacity-60"></div>
                             </div>
                             <div className="p-6 flex flex-col flex-grow">
                                 <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
                                 <p className="text-gray-400 text-sm mb-4 line-clamp-2">{project.description}</p>
-                                
+
                                 <div className="flex flex-wrap gap-2 mb-6 mt-auto">
                                     {project.tech.map(t => (
                                         <span key={t} className="text-xs px-2 py-1 rounded bg-white/5 text-gray-300 border border-white/5">
@@ -164,12 +111,14 @@ const Portfolio: React.FC = () => {
                     <Reveal key={cert.id} delay={index * 0.1} width="100%">
                          <div className="group relative rounded-2xl bg-white/5 border border-white/10 overflow-hidden h-64 cursor-pointer hover:border-purple-500/30 transition-all">
                             {/* Image */}
-                            <img 
-                                src={cert.image} 
-                                alt={cert.title} 
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter brightness-90 group-hover:brightness-100" 
+                            <Image
+                                src={cert.image}
+                                alt={cert.title}
+                                fill
+                                className="object-cover transition-transform duration-500 group-hover:scale-110 brightness-90 group-hover:brightness-100"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
-                            
+
                             {/* Overlay */}
                             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
                                 <div className="flex items-center gap-2 text-white font-medium bg-white/10 px-5 py-2.5 rounded-full backdrop-blur-md border border-white/20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
@@ -189,10 +138,12 @@ const Portfolio: React.FC = () => {
                     <Reveal key={item.name} delay={index * 0.05} width="100%">
                         <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1 group">
                             <div className="h-16 w-16 mb-4 flex items-center justify-center">
-                                <img 
-                                    src={item.icon} 
-                                    alt={item.name} 
-                                    className={`w-full h-full object-contain drop-shadow-md transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(168,85,247,0.6)] group-hover:scale-110 ${item.invert ? 'filter invert' : ''}`} 
+                                <Image
+                                    src={item.icon}
+                                    alt={item.name}
+                                    width={64}
+                                    height={64}
+                                    className={`drop-shadow-md transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(168,85,247,0.6)] group-hover:scale-110 ${item.invert ? 'filter invert' : ''}`}
                                 />
                             </div>
                             <span className="text-gray-300 font-bold text-sm group-hover:text-white transition-colors">{item.name}</span>

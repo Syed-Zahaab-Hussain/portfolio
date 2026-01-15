@@ -1,6 +1,8 @@
+"use client";
+
 import React, { useState } from 'react';
 import { Send, Linkedin, Instagram, Github, Mail, User, MessageSquare, Share2 } from 'lucide-react';
-import { Reveal } from './ui/Reveal';
+import { Reveal } from '@/components/ui/Reveal';
 
 const Contact: React.FC = () => {
     const [formState, setFormState] = useState({
@@ -8,13 +10,37 @@ const Contact: React.FC = () => {
         email: '',
         message: ''
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle submission logic
-        console.log("Form submitted", formState);
-        alert("Thanks for the message! (Demo only)");
-        setFormState({ name: '', email: '', message: ''});
+        setIsSubmitting(true);
+        setSubmitStatus('idle');
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formState),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setSubmitStatus('success');
+                setFormState({ name: '', email: '', message: '' });
+                alert('Message sent successfully! I\'ll get back to you soon.');
+            } else {
+                setSubmitStatus('error');
+                alert(data.error || 'Failed to send message. Please try again.');
+            }
+        } catch (error) {
+            setSubmitStatus('error');
+            alert('Failed to send message. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
   return (
@@ -108,10 +134,20 @@ const Contact: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full py-3 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold shadow-lg shadow-purple-900/20 hover:shadow-purple-900/40 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 text-sm"
+                disabled={isSubmitting}
+                className="w-full py-3 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold shadow-lg shadow-purple-900/20 hover:shadow-purple-900/40 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Send size={16} />
-                Send Message
+                {isSubmitting ? (
+                  <>
+                    <span className="animate-spin">⏳</span>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} />
+                    Send Message
+                  </>
+                )}
               </button>
             </form>
           </div>

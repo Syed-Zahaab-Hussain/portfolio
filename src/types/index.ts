@@ -12,7 +12,7 @@ export interface Project {
 
 export interface Certificate {
   id: number;
-  title: string; // Used for alt text or future expansion
+  title: string;
   image: string;
 }
 
@@ -26,4 +26,16 @@ export interface Stat {
   value: string;
   label: string;
   subLabel?: string;
+}
+
+export interface ContactFormData {
+  name: string;
+  email: string;
+  message: string;
+}
+
+export interface ApiResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
 }

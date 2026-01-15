@@ -1,13 +1,14 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import { navLinks } from '@/data/navigation';
+import { useActiveSection } from './ScrollSpy';
 
-interface NavbarProps {
-  activeSection: string;
-}
-
-const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
+const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const activeSection = useActiveSection();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,13 +17,6 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Portfolio', href: '#portfolio' },
-    { name: 'Contact', href: '#contact' },
-  ];
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -61,14 +55,14 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
               const isActive = activeSection === link.href.substring(1);
               return (
                 <a
-                  key={link.name}
+                  key={link.label}
                   href={link.href}
                   onClick={(e) => handleClick(e, link.href)}
                   className={`relative text-sm font-medium transition-colors duration-300 hover:text-purple-400 ${
                     isActive ? "text-purple-400" : "text-gray-400"
                   }`}
                 >
-                  {link.name}
+                  {link.label}
                   <span
                     className={`absolute left-0 -bottom-1.5 w-full h-0.5 bg-purple-400 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.5)] transition-all duration-300 ease-out origin-center ${
                       isActive
@@ -99,14 +93,14 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
               const isActive = activeSection === link.href.substring(1);
               return (
                 <a
-                  key={link.name}
+                  key={link.label}
                   href={link.href}
                   onClick={(e) => handleClick(e, link.href)}
                   className={`text-base font-medium py-2 transition-colors duration-300 ${
                     isActive ? "text-purple-400" : "text-gray-400"
                   }`}
                 >
-                  {link.name}
+                  {link.label}
                 </a>
               );
             })}

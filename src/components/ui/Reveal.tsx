@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from 'react';
 
 interface RevealProps {
@@ -13,14 +15,14 @@ export const Reveal: React.FC<RevealProps> = ({ children, width = 'fit-content',
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
-    
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           // Element entered viewport
           if (!isVisible) {
             setIsVisible(true);
-            
+
             // Set overflow to visible after animation finishes
             clearTimeout(timer);
             timer = setTimeout(() => {
@@ -54,12 +56,12 @@ export const Reveal: React.FC<RevealProps> = ({ children, width = 'fit-content',
   }, [delay, isVisible]);
 
   return (
-    <div 
-      ref={ref} 
-      style={{ 
-        width, 
-        position: 'relative', 
-        overflow: animationComplete ? 'visible' : 'hidden' 
+    <div
+      ref={ref}
+      style={{
+        width,
+        position: 'relative',
+        overflow: animationComplete ? 'visible' : 'hidden'
       }}
     >
       <div

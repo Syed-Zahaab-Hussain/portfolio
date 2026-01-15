@@ -1,6 +1,10 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Instagram, FileText, Send, Layers } from 'lucide-react';
-import { Reveal } from './ui/Reveal';
+import { Github, Linkedin, Instagram, Layers, Send } from 'lucide-react';
+import { Reveal } from '@/components/ui/Reveal';
+import { socialLinks } from '@/data/social';
+import { heroTechStack } from '@/data/techStack';
 
 const Hero: React.FC = () => {
   const [text, setText] = useState('');
@@ -9,7 +13,7 @@ const Hero: React.FC = () => {
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
-    
+
     if (isTyping) {
       if (text.length < fullText.length) {
         timeout = setTimeout(() => {
@@ -18,30 +22,14 @@ const Hero: React.FC = () => {
       } else {
         setIsTyping(false);
       }
-    } else {
-      // Optional: Backspace effect if we wanted to loop
-      // timeout = setTimeout(() => {
-      //   setIsTyping(true);
-      //   setText('');
-      // }, 3000); 
     }
 
     return () => clearTimeout(timeout);
   }, [text, isTyping]);
 
-  const socialLinks = [
-    { icon: Github, href: "https://github.com", label: "Github" },
-    { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-    { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  ];
-
-  const techStack = [
-    "React", "Javascript", "Node.js", "PostgreSQL", "Tailwind"
-  ];
-
   return (
     <div className="flex flex-col justify-center h-full pt-24 md:pt-36">
-      
+
       {/* Introduction */}
       <div className="space-y-6 max-w-4xl">
 
@@ -73,7 +61,7 @@ const Hero: React.FC = () => {
         {/* Tech Stack Pills */}
         <Reveal delay={0.3}>
           <div className="flex flex-wrap gap-3 mt-4">
-            {techStack.map((tech) => (
+            {heroTechStack.map((tech) => (
               <span key={tech} className="px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-gray-300 text-sm hover:bg-white/10 hover:border-purple-500/50 hover:text-purple-400 transition-all duration-300 cursor-default">
                 {tech}
               </span>
@@ -90,7 +78,7 @@ const Hero: React.FC = () => {
                 <span>Projects</span>
               </div>
             </a>
-            
+
             <a href="#contact" className="group relative px-6 py-3 rounded-lg bg-[#0a0a0a] border border-white/10 shadow-[0_0_15px_rgba(168,85,247,0.5)] hover:shadow-[0_0_25px_rgba(168,85,247,0.7)] overflow-hidden transition-all hover:bg-white/5">
               <div className="flex items-center gap-2 z-10 relative text-white font-medium">
                 <Send size={20} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform text-purple-400"/>
