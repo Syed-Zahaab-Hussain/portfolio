@@ -8,12 +8,12 @@ export const socialLinks = [
   },
   {
     icon: Linkedin,
-    href: "https://linkedin.com",
+    href: "https://www.linkedin.com/in/syed-zahaab-hussain-3a581a364",
     label: "LinkedIn",
   },
   {
     icon: Instagram,
-    href: "https://instagram.com",
+    href: "https://www.instagram.com/syedzahaab",
     label: "Instagram",
   },
 ];

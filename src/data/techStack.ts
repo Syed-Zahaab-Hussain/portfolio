@@ -20,4 +20,12 @@ export const techStackItems: TechStackItem[] = [
 ];
 
 // Hero tech stack pills
-export const heroTechStack = ["React", "Javascript", "Node.js", "PostgreSQL", "Tailwind"];
+export const heroTechStack = [
+  "Nextjs",
+  "React",
+  "TypeScript",
+  "Node.js",
+  "PostgreSQL",
+  "MongoDB",
+  "Tailwind",
+];
