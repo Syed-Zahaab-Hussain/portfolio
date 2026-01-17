@@ -16,7 +16,7 @@ const About: React.FC = () => {
 
           <div className="max-w-3xl space-y-6 text-gray-300 text-lg leading-relaxed mb-10">
              <p>
-                Hello, I'm <span className="font-bold text-white">Syed Zahaab Hussain</span>, passionate about building smart and scalable web & mobile applications. I've completed a full-stack development course and constantly explore new technologies to refine my skills.
+                Hello, I&apos;m <span className="font-bold text-white">Syed Zahaab Hussain</span>, passionate about building smart and scalable web & mobile applications. I&apos;ve completed a full-stack development course and constantly explore new technologies to refine my skills.
              </p>
              <p className="text-gray-400">
                 Focused on continuous learning, I aim to transition into the IT industry by 2027 and eventually move towards AI and data science. My journey is driven by curiosity and a desire to create impact through code.

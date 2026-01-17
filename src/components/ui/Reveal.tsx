@@ -45,12 +45,14 @@ export const Reveal: React.FC<RevealProps> = ({ children, width = 'fit-content',
       { threshold: 0.1 } // Trigger when 10% visible
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const currentRef = ref.current;
+
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (ref.current) observer.unobserve(ref.current);
+      if (currentRef) observer.unobserve(currentRef);
       clearTimeout(timer);
     };
   }, [delay, isVisible]);

@@ -11,12 +11,10 @@ const Contact: React.FC = () => {
         message: ''
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-        setSubmitStatus('idle');
 
         try {
             const response = await fetch('/api/contact', {
@@ -28,15 +26,12 @@ const Contact: React.FC = () => {
             const data = await response.json();
 
             if (data.success) {
-                setSubmitStatus('success');
                 setFormState({ name: '', email: '', message: '' });
                 alert('Message sent successfully! I\'ll get back to you soon.');
             } else {
-                setSubmitStatus('error');
                 alert(data.error || 'Failed to send message. Please try again.');
             }
-        } catch (error) {
-            setSubmitStatus('error');
+        } catch {
             alert('Failed to send message. Please try again.');
         } finally {
             setIsSubmitting(false);
@@ -51,7 +46,7 @@ const Contact: React.FC = () => {
             Contact Me
           </h2>
           <p className="text-gray-400 text-sm">
-            Got a question? Send me a message, and I'll get back to you soon.
+            Got a question? Send me a message, and I&apos;ll get back to you soon.
           </p>
         </div>
       </Reveal>
@@ -71,7 +66,7 @@ const Contact: React.FC = () => {
                   Get in Touch
                 </h3>
                 <p className="text-gray-400 text-xs md:text-sm">
-                  Have something to discuss? Send me a message and let's talk.
+                  Have something to discuss? Send me a message and let&apos;s talk.
                 </p>
               </div>
               <Share2
@@ -175,7 +170,7 @@ const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-gray-200 font-bold text-sm">
-                    Let's Connect
+                    Let&apos;s Connect
                   </h4>
                   <p className="text-gray-500 text-xs">on LinkedIn</p>
                 </div>
