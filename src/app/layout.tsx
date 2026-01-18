@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { siteConfig } from "@/config/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -10,23 +11,39 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Syed Zahaab Hussain - Full Stack Developer",
-  description: "Enhancing digital experiences that are smooth, scalable, and made to impress. Full Stack Developer specializing in React, Next.js, Node.js, and modern web technologies.",
-  keywords: ["Full Stack Developer", "React", "Next.js", "Node.js", "Web Development", "TypeScript", "PostgreSQL", "MongoDB"],
-  authors: [{ name: "Syed Zahaab Hussain" }],
-  creator: "Syed Zahaab Hussain",
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  authors: [{ name: siteConfig.author }],
+  creator: siteConfig.author,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://yourportfolio.com",
-    title: "Syed Zahaab Hussain - Full Stack Developer",
-    description: "Full Stack Developer specializing in building scalable web applications",
-    siteName: "Syed Zahaab Hussain Portfolio",
+    url: "/",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    siteName: `${siteConfig.name} Portfolio`,
+    images: [
+      {
+        url: "/og",
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} portfolio preview`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Syed Zahaab Hussain - Full Stack Developer",
-    description: "Full Stack Developer specializing in building scalable web applications",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: ["/og"],
   },
 };
 

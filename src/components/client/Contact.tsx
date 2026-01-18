@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Send, Linkedin, Instagram, Github, Mail, User, MessageSquare, Share2 } from 'lucide-react';
+import { Send, Mail, User, MessageSquare, Share2 } from 'lucide-react';
 import { Reveal } from '@/components/ui/Reveal';
+import { socialLinks } from '@/data/social';
 
 const Contact: React.FC = () => {
     const [formState, setFormState] = useState({
         name: '',
         email: '',
-        message: ''
+        message: '',
+        website: ''
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -26,7 +28,7 @@ const Contact: React.FC = () => {
             const data = await response.json();
 
             if (data.success) {
-                setFormState({ name: '', email: '', message: '' });
+                setFormState({ name: '', email: '', message: '', website: '' });
                 alert('Message sent successfully! I\'ll get back to you soon.');
             } else {
                 alert(data.error || 'Failed to send message. Please try again.');
@@ -76,6 +78,18 @@ const Contact: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              <input
+                type="text"
+                name="website"
+                value={formState.website}
+                onChange={(e) =>
+                  setFormState({ ...formState, website: e.target.value })
+                }
+                className="hidden"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
               <div className="relative group">
                 <User
                   className="absolute left-4 top-3.5 text-gray-500 group-focus-within:text-purple-400 transition-colors"
@@ -88,6 +102,7 @@ const Contact: React.FC = () => {
                   onChange={(e) =>
                     setFormState({ ...formState, name: e.target.value })
                   }
+                  maxLength={80}
                   className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-gray-300 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all placeholder:text-gray-600 text-sm backdrop-blur-sm shadow-inner"
                   required
                 />
@@ -105,6 +120,7 @@ const Contact: React.FC = () => {
                   onChange={(e) =>
                     setFormState({ ...formState, email: e.target.value })
                   }
+                  maxLength={254}
                   className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-gray-300 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all placeholder:text-gray-600 text-sm backdrop-blur-sm shadow-inner"
                   required
                 />
@@ -122,6 +138,8 @@ const Contact: React.FC = () => {
                   onChange={(e) =>
                     setFormState({ ...formState, message: e.target.value })
                   }
+                  minLength={10}
+                  maxLength={2000}
                   className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-gray-300 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all placeholder:text-gray-600 resize-none text-sm backdrop-blur-sm shadow-inner"
                   required
                 ></textarea>
@@ -134,7 +152,7 @@ const Contact: React.FC = () => {
               >
                 {isSubmitting ? (
                   <>
-                    <span className="animate-spin">⏳</span>
+                    <span className="h-4 w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
                     Sending...
                   </>
                 ) : (
@@ -158,53 +176,27 @@ const Contact: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              {/* Social Items */}
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 hover:bg-white/10 transition-all group"
-              >
-                <div className="p-2.5 rounded-lg bg-[#0077b5] text-white transition-colors shadow-lg shadow-blue-900/20">
-                  <Linkedin size={20} />
-                </div>
-                <div>
-                  <h4 className="text-gray-200 font-bold text-sm">
-                    Let&apos;s Connect
-                  </h4>
-                  <p className="text-gray-500 text-xs">on LinkedIn</p>
-                </div>
-              </a>
-
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 hover:bg-white/10 transition-all group"
-              >
-                <div className="p-2.5 rounded-lg bg-[#E1306C] text-white transition-colors shadow-lg shadow-pink-900/20">
-                  <Instagram size={20} />
-                </div>
-                <div>
-                  <h4 className="text-gray-200 font-bold text-sm">Instagram</h4>
-                  <p className="text-gray-500 text-xs">@alright.abhi</p>
-                </div>
-              </a>
-
-              <a
-                href="https://github.com/Syed-Zahaab-Hussain"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 hover:bg-white/10 transition-all group"
-              >
-                <div className="p-2.5 rounded-lg bg-[#1F2937] text-white transition-colors shadow-lg shadow-gray-900/20">
-                  <Github size={20} />
-                </div>
-                <div>
-                  <h4 className="text-gray-200 font-bold text-sm">Github</h4>
-                  <p className="text-gray-500 text-xs">@Syed-Zahaab-Hussain</p>
-                </div>
-              </a>
+              {socialLinks.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 hover:bg-white/10 transition-all group"
+                >
+                  <div className="p-2.5 rounded-lg bg-[#1F2937] text-white transition-colors shadow-lg shadow-gray-900/20">
+                    <social.icon size={20} />
+                  </div>
+                  <div>
+                    <h4 className="text-gray-200 font-bold text-sm">
+                      {social.label}
+                    </h4>
+                    <p className="text-gray-500 text-xs">
+                      {social.href.replace(/^https?:\/\//, '')}
+                    </p>
+                  </div>
+                </a>
+              ))}
             </div>
           </div>
         </div>

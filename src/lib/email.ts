@@ -6,6 +6,15 @@ interface EmailData {
   message: string;
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // Create transporter with Gmail SMTP
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -16,6 +25,10 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendEmail({ from, name, message }: EmailData) {
+  const safeName = escapeHtml(name);
+  const safeFrom = escapeHtml(from);
+  const safeMessage = escapeHtml(message).replace(/\n/g, '<br>');
+
   const mailOptions = {
     from: process.env.GMAIL_USER,
     to: process.env.CONTACT_EMAIL || process.env.GMAIL_USER,
@@ -70,15 +83,15 @@ export async function sendEmail({ from, name, message }: EmailData) {
             </div>
             <div class="content">
               <div class="field">
-                <span class="label">From:</span> ${name}
+                <span class="label">From:</span> ${safeName}
               </div>
               <div class="field">
-                <span class="label">Email:</span> ${from}
+                <span class="label">Email:</span> ${safeFrom}
               </div>
               <div class="field">
                 <span class="label">Message:</span>
                 <div class="message-box">
-                  ${message.replace(/\n/g, '<br>')}
+                  ${safeMessage}
                 </div>
               </div>
             </div>
@@ -111,10 +124,10 @@ ${message}
 export async function verifyEmailConnection() {
   try {
     await transporter.verify();
-    console.log('✅ Email service is ready');
+    console.log('Email service is ready');
     return true;
   } catch (error) {
-    console.error('❌ Email service connection failed:', error);
+    console.error('Email service connection failed:', error);
     return false;
   }
 }

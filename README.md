@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Syed Zahaab Hussain Portfolio
+
+A personal portfolio built with Next.js, React, TypeScript, Tailwind CSS, and Bun. It includes a single-page portfolio experience, optimized metadata, generated Open Graph image support, and a server-side contact form.
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Start the development server:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+bun run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open `http://localhost:3000`.
 
-## Learn More
+## Available Scripts
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+bun run dev
+bun run build
+bun run start
+bun run lint
+bun run typecheck
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Create `.env.local` with the values needed for the contact form and production metadata:
 
-## Deploy on Vercel
+```bash
+GMAIL_USER="your-email@gmail.com"
+GMAIL_APP_PASSWORD="your-gmail-app-password"
+CONTACT_EMAIL="where-contact-messages-should-go@example.com"
+NEXT_PUBLIC_SITE_URL="https://your-production-domain.com"
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`NEXT_PUBLIC_SITE_URL` is used for canonical metadata, `robots.txt`, and `sitemap.xml`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Production Checks
+
+Before deploying, run:
+
+```bash
+bun run typecheck
+bun run build
+```
+
+The contact form includes server-side validation, basic rate limiting, length limits, a honeypot field, and HTML escaping for submitted content.
