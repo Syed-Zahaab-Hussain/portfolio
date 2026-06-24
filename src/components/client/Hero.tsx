@@ -9,23 +9,18 @@ import { heroTechStack } from "@/data/techStack";
 const Hero: React.FC = () => {
   const [text, setText] = useState("");
   const fullText = "Software Engineering. Student";
-  const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
-
-    if (isTyping) {
-      if (text.length < fullText.length) {
-        timeout = setTimeout(() => {
-          setText(fullText.slice(0, text.length + 1));
-        }, 100);
-      } else {
-        setIsTyping(false);
-      }
+    if (text.length >= fullText.length) {
+      return;
     }
 
+    const timeout = setTimeout(() => {
+      setText(fullText.slice(0, text.length + 1));
+    }, 100);
+
     return () => clearTimeout(timeout);
-  }, [text, isTyping]);
+  }, [text]);
 
   return (
     <div className="flex flex-col justify-center h-full pt-24 md:pt-36">
