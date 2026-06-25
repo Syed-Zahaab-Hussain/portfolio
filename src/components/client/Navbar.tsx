@@ -79,6 +79,9 @@ const Navbar: React.FC = () => {
           <button
             className="md:hidden text-gray-300 hover:text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-navigation"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -87,7 +90,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-[#0a0a0a] border-b border-white/10 p-4 shadow-xl">
+        <div id="mobile-navigation" className="md:hidden absolute top-full left-0 right-0 bg-[#0a0a0a] border-b border-white/10 p-4 shadow-xl">
           <div className="flex flex-col gap-4">
             {navLinks.map((link) => {
               const isActive = activeSection === link.href.substring(1);
@@ -97,7 +100,7 @@ const Navbar: React.FC = () => {
                   href={link.href}
                   onClick={(e) => handleClick(e, link.href)}
                   className={`text-base font-medium py-2 transition-colors duration-300 ${
-                    isActive ? "text-purple-400" : "text-gray-400"
+                    isActive ? "text-purple-400" : "text-gray-300"
                   }`}
                 >
                   {link.label}

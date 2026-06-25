@@ -3,7 +3,7 @@ export const siteConfig = {
   title: "Syed Zahaab Hussain - Full Stack Developer",
   description:
     "Full Stack Developer building secure, scalable, and accessible web applications with React, Next.js, Node.js, TypeScript, and modern databases.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "http://syedzahaab.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://syedzahaab.com",
   author: "Syed Zahaab Hussain",
   keywords: [
     "Syed Zahaab Hussain",

@@ -47,7 +47,7 @@ const Contact: React.FC = () => {
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-purple-500 tracking-tight">
             Contact Me
           </h2>
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-300 text-sm">
             Got a question? Send me a message, and I&apos;ll get back to you soon.
           </p>
         </div>
@@ -67,14 +67,21 @@ const Contact: React.FC = () => {
                 <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400 mb-2">
                   Get in Touch
                 </h3>
-                <p className="text-gray-400 text-xs md:text-sm">
+                <p className="text-gray-300 text-xs md:text-sm">
                   Have something to discuss? Send me a message and let&apos;s talk.
                 </p>
               </div>
-              <Share2
-                className="text-gray-500/50 hover:text-purple-400 transition-colors cursor-pointer"
-                size={24}
-              />
+              <button
+                type="button"
+                aria-label="Share contact section"
+                className="text-gray-300/70 hover:text-purple-400 transition-colors"
+              >
+                <Share2
+                  aria-hidden="true"
+                  focusable="false"
+                  size={24}
+                />
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -92,7 +99,7 @@ const Contact: React.FC = () => {
               />
               <div className="relative group">
                 <User
-                  className="absolute left-4 top-3.5 text-gray-500 group-focus-within:text-purple-400 transition-colors"
+                  className="absolute left-4 top-3.5 text-gray-400 group-focus-within:text-purple-400 transition-colors"
                   size={18}
                 />
                 <input
@@ -103,14 +110,14 @@ const Contact: React.FC = () => {
                     setFormState({ ...formState, name: e.target.value })
                   }
                   maxLength={80}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-gray-300 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all placeholder:text-gray-600 text-sm backdrop-blur-sm shadow-inner"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-gray-200 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all placeholder:text-gray-400 text-sm backdrop-blur-sm shadow-inner"
                   required
                 />
               </div>
 
               <div className="relative group">
                 <Mail
-                  className="absolute left-4 top-3.5 text-gray-500 group-focus-within:text-purple-400 transition-colors"
+                  className="absolute left-4 top-3.5 text-gray-400 group-focus-within:text-purple-400 transition-colors"
                   size={18}
                 />
                 <input
@@ -121,14 +128,14 @@ const Contact: React.FC = () => {
                     setFormState({ ...formState, email: e.target.value })
                   }
                   maxLength={254}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-gray-300 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all placeholder:text-gray-600 text-sm backdrop-blur-sm shadow-inner"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-gray-200 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all placeholder:text-gray-400 text-sm backdrop-blur-sm shadow-inner"
                   required
                 />
               </div>
 
               <div className="relative group">
                 <MessageSquare
-                  className="absolute left-4 top-3.5 text-gray-500 group-focus-within:text-purple-400 transition-colors"
+                  className="absolute left-4 top-3.5 text-gray-400 group-focus-within:text-purple-400 transition-colors"
                   size={18}
                 />
                 <textarea
@@ -140,7 +147,7 @@ const Contact: React.FC = () => {
                   }
                   minLength={10}
                   maxLength={2000}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-gray-300 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all placeholder:text-gray-600 resize-none text-sm backdrop-blur-sm shadow-inner"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-gray-200 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all placeholder:text-gray-400 resize-none text-sm backdrop-blur-sm shadow-inner"
                   required
                 ></textarea>
               </div>
@@ -148,7 +155,7 @@ const Contact: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold shadow-lg shadow-purple-900/20 hover:shadow-purple-900/40 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full cursor-pointer py-3 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold shadow-lg shadow-purple-900/20 hover:shadow-purple-900/40 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
@@ -182,6 +189,7 @@ const Contact: React.FC = () => {
                   href={social.href}
                   target="_blank"
                   rel="noreferrer"
+                  aria-label={`Open ${social.label} profile`}
                   className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 hover:bg-white/10 transition-all group"
                 >
                   <div className="p-2.5 rounded-lg bg-[#1F2937] text-white transition-colors shadow-lg shadow-gray-900/20">
@@ -191,7 +199,7 @@ const Contact: React.FC = () => {
                     <h4 className="text-gray-200 font-bold text-sm">
                       {social.label}
                     </h4>
-                    <p className="text-gray-500 text-xs">
+                    <p className="text-gray-400 text-xs">
                       {social.href.replace(/^https?:\/\//, '')}
                     </p>
                   </div>

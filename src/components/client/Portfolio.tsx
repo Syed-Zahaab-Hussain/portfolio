@@ -20,7 +20,7 @@ const Portfolio: React.FC = () => {
               Portfolio Showcase
             </span>
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-300 max-w-2xl mx-auto">
             Explore my journey through projects, certifications, and technical expertise. Each section represents a milestone in my continuous learning path.
           </p>
         </div>
@@ -32,8 +32,8 @@ const Portfolio: React.FC = () => {
             <div className="inline-flex p-1 bg-white/5 rounded-xl border border-white/10 backdrop-blur-sm">
                 <button
                     onClick={() => setActiveTab('projects')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
-                        activeTab === 'projects' ? 'bg-purple-600/20 text-purple-300 shadow-lg' : 'text-gray-400 hover:text-white'
+                    className={`flex cursor-pointer items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
+                        activeTab === 'projects' ? 'bg-purple-600/20 text-purple-300 shadow-lg' : 'text-gray-300 hover:text-white'
                     }`}
                 >
                     <Code2 size={18} />
@@ -41,8 +41,8 @@ const Portfolio: React.FC = () => {
                 </button>
                 <button
                     onClick={() => setActiveTab('certificates')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
-                        activeTab === 'certificates' ? 'bg-purple-600/20 text-purple-300 shadow-lg' : 'text-gray-400 hover:text-white'
+                    className={`flex cursor-pointer items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
+                        activeTab === 'certificates' ? 'bg-purple-600/20 text-purple-300 shadow-lg' : 'text-gray-300 hover:text-white'
                     }`}
                 >
                     <Award size={18} />
@@ -50,8 +50,8 @@ const Portfolio: React.FC = () => {
                 </button>
                 <button
                     onClick={() => setActiveTab('stack')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
-                        activeTab === 'stack' ? 'bg-purple-600/20 text-purple-300 shadow-lg' : 'text-gray-400 hover:text-white'
+                    className={`flex cursor-pointer items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
+                        activeTab === 'stack' ? 'bg-purple-600/20 text-purple-300 shadow-lg' : 'text-gray-300 hover:text-white'
                     }`}
                 >
                     <Database size={18} />
@@ -80,7 +80,7 @@ const Portfolio: React.FC = () => {
                             </div>
                             <div className="p-6 flex flex-col flex-grow">
                                 <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
-                                <p className="text-gray-400 text-sm mb-4 line-clamp-2">{project.description}</p>
+                                <p className="text-gray-300 text-sm mb-4 line-clamp-2">{project.description}</p>
 
                                 <div className="flex flex-wrap gap-2 mb-6 mt-auto">
                                     {project.tech.map(t => (
@@ -94,7 +94,7 @@ const Portfolio: React.FC = () => {
                                     <a href={project.demoLink} className="flex items-center gap-2 text-sm font-medium text-white hover:text-purple-400 transition-colors">
                                         Live Demo <ExternalLink size={14} />
                                     </a>
-                                    <button className="flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
+                                    <button className="flex items-center gap-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">
                                         Details <Info size={14} />
                                     </button>
                                 </div>
