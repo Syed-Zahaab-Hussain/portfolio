@@ -2,17 +2,15 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import styles from "../auth.module.css";
 
-const field = "mt-2 w-full rounded-lg border border-white/10 bg-[#0b0b13] px-4 py-3 text-white outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20";
-const button = "w-full rounded-lg bg-violet-500 px-4 py-3 font-semibold text-white transition hover:bg-violet-400 disabled:cursor-not-allowed disabled:opacity-50";
-
-export function Login() {
+export function Login({ initialForgot = false }: { initialForgot?: boolean }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [forgot, setForgot] = useState(false);
+  const [forgot, setForgot] = useState(initialForgot);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -44,29 +42,76 @@ export function Login() {
 
   return (
     <>
-      <p className="text-sm text-slate-400">{forgot ? "Enter your email to request a password reset." : "Enter your details to access your workspace."}</p>
-      <form onSubmit={submit} className="space-y-4">
-        <label className="block text-sm font-medium text-slate-300">
-          Email
-          <input className={field} type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="username" required />
-        </label>
+      <h1 id="auth-heading" className={styles.heading}>
+        <LockKeyhole size={26} aria-hidden="true" />
+        {forgot ? "Forgot password" : "Owner Sign In"}
+      </h1>
+      {forgot && <p className={styles.description}>Enter your email to request a password reset.</p>}
+      <form onSubmit={submit} className={styles.form}>
+        <div>
+          <label htmlFor="owner-email" className={styles.labelRow}>Email</label>
+          <div className={styles.inputWrap}>
+            <Mail size={17} className={styles.inputIcon} aria-hidden="true" />
+            <input
+              id="owner-email"
+              className={styles.input}
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="username"
+              required
+            />
+          </div>
+        </div>
         {!forgot && (
-          <label className="block text-sm font-medium text-slate-300">
-            Password
-            <span className="relative block">
-              <input className={`${field} pr-12`} type={showPassword ? "text" : "password"} value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required />
-              <button type="button" aria-label={showPassword ? "Hide password" : "Show password"} onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 mt-1 -translate-y-1/2 text-slate-400 hover:text-white">
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          <div>
+            <div className={styles.labelRow}>
+              <label htmlFor="owner-password">Password</label>
+              <button
+                type="button"
+                className={styles.link}
+                disabled={busy}
+                onClick={() => {
+                  setForgot(true);
+                  setPassword("");
+                  setShowPassword(false);
+                  setMessage("");
+                }}
+              >
+                Forgot password?
               </button>
-            </span>
-          </label>
+            </div>
+            <div className={styles.inputWrap}>
+              <LockKeyhole size={17} className={styles.inputIcon} aria-hidden="true" />
+              <input
+                id="owner-password"
+                className={styles.input}
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                autoComplete="current-password"
+                required
+              />
+              <button type="button" aria-label={showPassword ? "Hide password" : "Show password"} onClick={() => setShowPassword(!showPassword)} className={styles.toggle}>
+                {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+              </button>
+            </div>
+          </div>
         )}
-        <button className={button} disabled={busy}>{busy ? "Please wait..." : forgot ? "Send reset link" : "Sign in"}</button>
+        <button className={styles.submit} disabled={busy}>
+          {busy ? "Please wait…" : forgot ? "Send reset link" : "Sign In"}
+          {!busy && <ArrowRight size={18} aria-hidden="true" />}
+        </button>
       </form>
-      <button type="button" className="block text-sm text-violet-300 hover:text-violet-200" onClick={() => { setForgot(!forgot); setMessage(""); }}>
-        {forgot ? "Back to sign in" : "Forgot password?"}
-      </button>
-      {message && <p role="status" className="rounded-lg border border-violet-400/20 bg-violet-400/5 p-3 text-sm text-slate-200">{message}</p>}
+      {forgot && (
+        <div className={styles.footerLinks}>
+          <button type="button" className={styles.link} disabled={busy} onClick={() => { setForgot(false); setMessage(""); }}>
+            Back to sign in
+          </button>
+        </div>
+      )}
+      {message && <p role="status" className={styles.feedback}>{message}</p>}
     </>
   );
 }

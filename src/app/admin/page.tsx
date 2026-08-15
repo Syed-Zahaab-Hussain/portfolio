@@ -1,14 +1,15 @@
-import { requireOwner } from "@/lib/owner";
-import { Logout } from "./logout";
 import Link from "next/link";
+import { ArrowRight, FilePenLine, Plus } from "lucide-react";
+import { getDb } from "@/lib/db";
+import { requireOwner } from "@/lib/owner";
+import { Workspace } from "./workspace";
 export const dynamic = "force-dynamic";
 export default async function AdminPage() {
   await requireOwner();
-  return (
-    <main className="min-h-screen bg-slate-950 p-8 text-white">
-      <h1 className="text-3xl font-bold">Portfolio admin</h1>
-      <p className="my-6"><Link className="text-violet-300" href="/admin/projects">Manage projects →</Link></p>
-      <Logout />
-    </main>
-  );
+  const projects = await getDb().project.findMany({ orderBy: { updatedAt: "desc" } });
+  const draft = projects.find((project) => project.status === "DRAFT");
+  return <Workspace><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm text-violet-300">Your portfolio workspace</p><h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Welcome back</h1><p className="mt-2 text-slate-400">Manage your projects and share your work.</p></div><Link href="/admin/projects/new" className="inline-flex items-center gap-2 rounded-xl bg-violet-500 px-4 py-3 text-sm font-semibold text-white hover:bg-violet-400"><Plus size={18} /> New project</Link></div>
+  <div className="mt-8 grid gap-4 sm:grid-cols-2">{([['Drafts', projects.filter(p => p.status === 'DRAFT').length], ['Published', projects.filter(p => p.status === 'PUBLISHED').length]] as const).map(([label,count]) => <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-5"><p className="text-sm text-slate-400">{label}</p><p className="mt-2 text-3xl font-semibold">{count}</p></div>)}</div>
+  <section className="mt-6 rounded-2xl border border-violet-400/20 bg-gradient-to-br from-violet-500/15 via-[#151322] to-teal-500/5 p-6 sm:p-8"><div className="flex items-center gap-2 text-sm font-medium text-violet-300"><FilePenLine size={18} /> Continue editing</div>{draft ? <><h2 className="mt-4 break-words text-2xl font-semibold">{draft.title}</h2><p className="mt-2 text-sm text-slate-400">Draft · Updated {draft.updatedAt.toISOString().slice(0,10)}</p><Link className="mt-6 inline-flex items-center gap-2 rounded-xl bg-violet-500 px-4 py-3 text-sm font-semibold hover:bg-violet-400" href={`/admin/projects/${draft.id}`}>Continue editing <ArrowRight size={16} /></Link></> : <><p className="mt-4 text-slate-300">Your next project starts here.</p><Link className="mt-5 inline-block text-sm font-medium text-violet-300" href="/admin/projects/new">Start a draft →</Link></>}</section>
+  <section className="mt-8"><div className="flex items-center justify-between"><h2 className="text-xl font-semibold">Recently updated</h2><Link href="/admin/projects" className="text-sm text-violet-300">View all projects →</Link></div><div className="mt-4 divide-y divide-white/10 rounded-2xl border border-white/10 bg-white/[0.03]">{projects.length ? projects.slice(0,5).map(project => <Link key={project.id} href={`/admin/projects/${project.id}`} className="flex flex-wrap items-center justify-between gap-3 p-4 hover:bg-white/5"><span className="break-all font-medium">{project.title}</span><span className="text-sm text-slate-400">{project.status === 'DRAFT' ? 'Draft' : 'Published'} · {project.updatedAt.toISOString().slice(0,10)}</span></Link>) : <p className="p-5 text-sm text-slate-400">No projects yet. Create your first draft to get started.</p>}</div></section></Workspace>;
 }
