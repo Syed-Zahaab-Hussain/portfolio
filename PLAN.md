@@ -1,0 +1,183 @@
+# Portfolio Upgrade Plan
+
+Created: 2026-11-04
+
+Purpose: Turn the existing portfolio into a content-managed developer portfolio with an owner-only dashboard and a grounded AI assistant. Keep Vercel hosting for now and preserve a practical path to AWS later.
+
+## Tracking and scope
+
+- `[ ]` means remaining; `[x]` means completed and verified.
+- Mark a task complete only when its acceptance criteria have been met. Record the verification performed and any limitations.
+- Keep implementation, automated verification, browser verification, and production verification distinct.
+- This file authorizes planning only. Implement phases after the user authorizes the relevant work.
+- Do not stage, commit, push, provision services, incur charges, or change production data without explicit user authorization.
+- Preserve unrelated changes. Update this checklist as authorized implementation progresses.
+
+## Mandatory sensitive-information rules
+
+These rules apply throughout planning, implementation, testing, troubleshooting, and deployment:
+
+- **Never open, read, search, source, print, copy, modify, or otherwise access `.env` files, including `.env.local`, `.env.production`, and other `.env*` variants.** The user has explicitly allowed access to `.env.example`; that exception does not extend to files containing secrets.
+- **Never access other sensitive files or information**, including API keys, passwords, tokens, database connection strings, private keys, credential stores, cloud credentials, session cookies, authentication headers, database dumps, private messages, or personal data that has not been explicitly approved for publication.
+- Exclude sensitive paths from searches, indexing, exports, AI context, screenshots, logs, and generated artifacts. Do not run broad commands that could expose their contents, including environment-variable dumps.
+- Never ask the user to paste secrets into chat. The user must configure secrets directly in their local environment or provider dashboard. Document variable names and placeholder values only in ordinary documentation.
+- Do not inspect provider dashboards, browser storage, process environments, or logs to recover secrets. If verification depends on sensitive access, explain the limitation and provide a user-run check that reports only a safe success/failure result.
+- Approved application code may consume user-configured secrets at runtime through environment variables. This does not authorize the assistant to inspect their values, and secrets must never reach client bundles or logs.
+- Never ingest sensitive information into the RAG knowledge base or send it to OpenRouter, an embedding provider, or another external service.
+- If sensitive information appears accidentally, stop that inspection, do not repeat or save the information, and notify the user without quoting it.
+
+## Architecture and decisions
+
+| Area | Direction | Status |
+| --- | --- | --- |
+| Framework | Upgrade existing App Router application to latest stable Next.js 16.x; align React and tooling | Agreed direction |
+| Hosting | Vercel initially; document a later AWS move | Agreed |
+| Database | Neon PostgreSQL | Agreed |
+| ORM and schema migrations | Prisma | Agreed |
+| Authentication | Better Auth with Prisma adapter; owner-only access | Proposed; confirm before implementation |
+| Login security | Email/password, authenticator-app 2FA, recovery codes, password reset | Proposed |
+| Media | Cloudinary behind a small upload/delete/storage interface | Tentative; confirm |
+| AI model access | OpenRouter for answer generation | Proposed provider; confirm model and budget |
+| Retrieval | Published content only; Neon pgvector if corpus size warrants it | Agreed approach; implementation to assess |
+| Agent actions | Outside initial scope | Deferred |
+| Articles/blog | Decide whether needed in initial release | Open |
+
+Cloudinary uses its own API rather than an S3-compatible endpoint. Future migration to S3 requires transferring assets and updating references. Moving application hosting to AWS does not require moving Neon or Cloudinary simultaneously.
+
+## Phase 0: Confirm scope and content inputs
+
+- [ ] Confirm Better Auth and the proposed login/recovery methods.
+- [ ] Confirm Cloudinary for images and decide how CV documents will be stored and delivered.
+- [ ] Confirm OpenRouter, choose a suitable generation model, and agree usage/spending limits.
+- [ ] Choose an embedding provider/model separately if vector retrieval is needed; verify current availability and pricing during implementation.
+- [ ] Decide whether articles belong in the first release.
+- [ ] Select 3–5 showcase projects and confirm what can be published, especially for private/client work.
+- [ ] Obtain approved biography, education, experience, availability, CV, certificate details, project descriptions, and media.
+- [ ] Identify development, preview, and production environments; the user configures their credentials privately.
+
+Acceptance: Scope and outstanding choices are recorded; public content is approved without inventing experience, credentials, results, or completion claims.
+
+## Phase 1: Upgrade Next.js independently
+
+- [x] Inspect relevant source/configuration and existing user changes without accessing sensitive files.
+- [x] Upgrade to the latest stable Next.js 16.x and compatible React, types, and ESLint tooling; avoid prereleases.
+- [ ] Check the actual local and Vercel Node.js runtimes against supported requirements.
+- [x] Review async request APIs, image configuration/defaults, lint configuration, and navigation behaviour.
+- [ ] Adopt `proxy.ts` if request interception is needed; enforce authorization separately at server entry points.
+- [ ] Keep Cache Components adoption separate from the initial version upgrade; assess it when introducing database-backed pages.
+- [x] Run lint, type checking, and production build; fix upgrade regressions.
+- [ ] Browser-check navigation, tabs, images, animations, responsive layouts, and contact form UI without sending unsolicited messages.
+
+Acceptance: Existing behaviour is preserved, required checks pass, and browser limitations are documented before new features are introduced.
+
+## Phase 2: Database and application foundation
+
+- [ ] Add Prisma with a compatible PostgreSQL driver/connection strategy for Neon and Vercel.
+- [ ] Define models for profile/settings, projects, skills, experience, education, certificates, media, CV metadata, and enquiries.
+- [ ] Add authentication models through the chosen auth integration.
+- [ ] Model stable slugs, draft/published state, ordering, featured projects, timestamps, and media relationships.
+- [ ] Design enquiry retention and deletion behaviour; keep private enquiries separate from public content.
+- [ ] Create reviewable migrations; apply them only to the user-authorized environment.
+- [ ] Import approved existing content through an explicit, non-destructive process.
+- [ ] Document configuration variable names and setup steps without reading or writing `.env*` files.
+
+Acceptance: The schema and migrations support approved features, development data is isolated, and public queries expose only intended published records.
+
+## Phase 3: Owner authentication and authorization
+
+- [ ] Integrate Better Auth with Next.js, Prisma, and Neon after confirmation.
+- [ ] Provide a controlled process for the user to establish the single owner account; disable public and implicit signup paths.
+- [ ] Add login, logout, session expiry, password reset, and authenticator-app 2FA with recovery codes.
+- [ ] Enforce owner authorization on protected pages, Route Handlers, Server Actions, and upload-signing endpoints.
+- [ ] Configure secure session cookies, trusted origins, and appropriate authentication rate limiting.
+- [ ] Ensure protected responses cannot be cached publicly.
+- [ ] Verify unauthenticated and authenticated-but-unauthorized requests cannot read or mutate admin data.
+- [ ] Verify sign-in, sign-out, recovery, and session behaviour using user-approved test accounts without inspecting credentials or session values.
+
+Acceptance: Only the designated owner can administer content. Hiding UI or redirecting a page is never the sole authorization check.
+
+## Phase 4: Media and admin dashboard
+
+- [ ] Integrate the confirmed storage provider through a small interface for upload, delete, and delivery metadata.
+- [ ] Store provider identifiers, resource types, dimensions, alt text, and delivery references in PostgreSQL.
+- [ ] Validate file types and sizes; authorize signed uploads and keep provider secrets server-side.
+- [ ] Provide owner interfaces to manage profile, projects, skills, experience, education, certificates, CV, and media.
+- [ ] Support draft editing, authenticated preview, publishing/unpublishing, ordering, and featured-project selection.
+- [ ] Handle media replacement and deletion without breaking referenced published content; require explicit confirmation for destructive dashboard actions.
+- [ ] Add loading, empty, success, validation, and failure states.
+- [ ] Refresh public content caches when content is published, updated, or unpublished.
+
+Acceptance: The owner can maintain portfolio content without editing source files; drafts and previews remain private, and published changes appear correctly.
+
+## Phase 5: Public content and portfolio experience
+
+- [ ] Rewrite the hero/About around current, approved experience and availability; remove outdated or unsupported claims.
+- [ ] Group skills by area and distinguish practical experience from current learning.
+- [ ] Replace stock project and certificate imagery with approved assets.
+- [ ] Add project detail pages covering the problem, contribution, features, technical decisions, challenges, status, and screenshots.
+- [ ] Provide working demo/source links where available and accurate explanations for private repositories or unavailable demos.
+- [ ] Add experience, education, verifiable certificate links, and a working CV download.
+- [ ] Derive relevant counts from published records; remove unsupported statistics.
+- [ ] Fix or remove inactive Details, CV, share, and other controls.
+- [ ] Add per-page metadata, canonical URLs, social previews, sitemap entries, and structured data where appropriate.
+- [ ] Review mobile layouts, keyboard navigation, labels, contrast, reduced-motion preferences, and image loading.
+- [ ] Add privacy-conscious traffic/conversion analytics only after choosing a provider and reviewing data collection.
+- [ ] Add articles only if approved; defer filtering until enough content makes it useful.
+
+Acceptance: Visitors can quickly understand the developer's capabilities, inspect real work, access the CV, and make contact without encountering placeholder content or dead controls.
+
+## Phase 6: Enquiry management
+
+- [ ] Persist validated contact submissions privately in PostgreSQL and retain email notifications.
+- [ ] Track unread/read/resolved status in the admin dashboard.
+- [ ] Define safe behaviour for database success with email failure so accepted enquiries are not lost or misleadingly rejected.
+- [ ] Retain spam protection and introduce deployment-appropriate rate limiting rather than relying solely on process memory.
+- [ ] Set retention/deletion rules and avoid logging enquiry bodies or personal contact details.
+- [ ] Verify the complete flow with explicit authorization to submit test enquiries and send test email.
+
+Acceptance: Accepted enquiries are stored reliably, only the owner can access them, and notification failures are handled clearly.
+
+## Phase 7: RAG portfolio assistant
+
+- [ ] Add an accessible “Ask about my work” interface with streaming responses, suggested questions, and error states.
+- [ ] Integrate OpenRouter on the server using the selected model; keep model choice configurable.
+- [ ] Build a knowledge source from approved published biography, skills, experience, CV content, projects, and optional articles.
+- [ ] Assess corpus size: use curated context if sufficient, or chunk/embed content and retrieve with Neon pgvector.
+- [ ] Keep retrieval queries in a dedicated layer; use Prisma for application records and appropriate parameterized vector queries as needed.
+- [ ] Maintain source IDs/URLs, content versions, and indexing status; refresh on publication changes and remove unpublished/deleted content from retrieval promptly.
+- [ ] Add admin indexing status, retry/reindex controls, and safe failure handling.
+- [ ] Ground answers in retrieved content, link supporting sources, and acknowledge missing information.
+- [ ] Support project/skill questions and optional job-description matching that identifies evidence and gaps without inventing qualifications.
+- [ ] Treat visitor input and retrieved text as untrusted data; prohibit arbitrary SQL, private-data retrieval, admin mutations, and action-taking tools.
+- [ ] Apply input/context/output limits, rate limits, timeouts, concurrency controls, and a practical spending cap/kill switch.
+- [ ] Decide chat retention and disclose external AI processing; default to no persistent conversation storage unless explicitly approved.
+- [ ] Evaluate representative questions, unsupported claims, stale/unpublished content, prompt injection, irrelevant questions, provider outages, latency, and cost.
+
+Acceptance: Answers are useful and traceable to current public content; unsupported questions receive an honest limitation, private data remains inaccessible, and the assistant can be disabled without affecting the portfolio.
+
+## Phase 8: Verification, Vercel deployment, and AWS readiness
+
+- [ ] Run appropriate lint, type, build, and meaningful integration checks for implemented behaviour.
+- [ ] Verify public/admin workflows in a browser at mobile and desktop sizes.
+- [ ] Record automated, browser, and production evidence separately, including unverified flows.
+- [ ] Document Vercel deployment settings, user-managed configuration names, build steps, and production migration procedure.
+- [ ] Ensure preview deployments do not mutate production content or consume production AI budgets unintentionally.
+- [ ] Prepare rollback and database/media backup-and-restore procedures without accessing secrets or private backups.
+- [ ] Deploy only with explicit user authorization and record safe post-deployment checks.
+- [ ] Document an AWS hosting path, including runtime packaging, HTTPS, networking, background indexing, email, caching, observability, and operational costs.
+- [ ] Document optional later migration from Neon to PostgreSQL on AWS and Cloudinary to S3/CloudFront, including data/asset transfer and reference updates.
+
+Acceptance: The authorized release works on Vercel with documented operational steps. AWS remains a migration plan until separately authorized and verified.
+
+## Deferred work
+
+- Action-taking agents, autonomous communication, and scheduling integrations.
+- Public visitor accounts or multi-user administration.
+- Testimonials without genuine approved source material.
+- AWS provisioning, production database migration, and S3 asset migration.
+
+## Verification log
+
+Record date, completed task, evidence, and remaining limitations here during implementation. Do not include secrets, private data, or raw sensitive logs.
+
+- 2026-11-04: Upgraded Next.js to 16.4.5 in source and lockfile, with React 19.3.1 and matching lint tooling. In an isolated copy without `.env*` files, ESLint, TypeScript, and production build passed; `/`, `/og`, `/robots.txt`, and `/sitemap.xml` returned HTTP 200. Open Graph now uses the Node.js runtime. Browser preview timed out, Vercel runtime and production remain unchecked, and workspace dependencies still need installation. No email was sent.
