@@ -12,12 +12,14 @@ Purpose: Turn the existing portfolio into a content-managed developer portfolio 
 - This file authorizes planning only. Implement phases after the user authorizes the relevant work.
 - Do not stage, commit, push, provision services, incur charges, or change production data without explicit user authorization.
 - Preserve unrelated changes. Update this checklist as authorized implementation progresses.
+- Define database changes in `prisma/schema.prisma` and let Prisma generate migration files using `prisma migrate dev`. Never hand-write migration files or add custom SQL triggers to migrations. Do not apply migrations without authorization for the target environment.
+- Development migrations accept a descriptive name: `bun run db:migrate:dev --name <change-name>`. Prisma config loads `.env` using dotenv and requires `DIRECT_URL` for the Neon development branch; application queries use pooled `DATABASE_URL`.
 
 ## Mandatory sensitive-information rules
 
 These rules apply throughout planning, implementation, testing, troubleshooting, and deployment:
 
-- **Never open, read, search, source, print, copy, modify, or otherwise access `.env` files, including `.env.local`, `.env.production`, and other `.env*` variants.** The user has explicitly allowed access to `.env.example`; that exception does not extend to files containing secrets.
+- **Do not actively open, print, search, copy, or edit private `.env` files or expose their values.** Normal application, package-manager, and CLI loading of environment configuration is permitted. Work directly in the main repository; a separate source copy is not required. `.env.example` may be accessed and maintained with placeholders only.
 - **Never access other sensitive files or information**, including API keys, passwords, tokens, database connection strings, private keys, credential stores, cloud credentials, session cookies, authentication headers, database dumps, private messages, or personal data that has not been explicitly approved for publication.
 - Exclude sensitive paths from searches, indexing, exports, AI context, screenshots, logs, and generated artifacts. Do not run broad commands that could expose their contents, including environment-variable dumps.
 - Never ask the user to paste secrets into chat. The user must configure secrets directly in their local environment or provider dashboard. Document variable names and placeholder values only in ordinary documentation.
@@ -34,8 +36,8 @@ These rules apply throughout planning, implementation, testing, troubleshooting,
 | Hosting | Vercel initially; document a later AWS move | Agreed |
 | Database | Neon PostgreSQL | Agreed |
 | ORM and schema migrations | Prisma | Agreed |
-| Authentication | Better Auth with Prisma adapter; owner-only access | Proposed; confirm before implementation |
-| Login security | Email/password, authenticator-app 2FA, recovery codes, password reset | Proposed |
+| Authentication | Better Auth with Prisma adapter; owner-only access | Implemented in main repository; live Neon verification pending |
+| Login security | Email/password and password reset | Implemented; live flow verification pending |
 | Media | Cloudinary behind a small upload/delete/storage interface | Tentative; confirm |
 | AI model access | OpenRouter for answer generation | Proposed provider; confirm model and budget |
 | Retrieval | Published content only; Neon pgvector if corpus size warrants it | Agreed approach; implementation to assess |
@@ -44,9 +46,17 @@ These rules apply throughout planning, implementation, testing, troubleshooting,
 
 Cloudinary uses its own API rather than an S3-compatible endpoint. Future migration to S3 requires transferring assets and updating references. Moving application hosting to AWS does not require moving Neon or Cloudinary simultaneously.
 
+### Development database scope
+
+- The database name is `portfolio`. It serves the entire application during development, including authentication, portfolio content, enquiries, and future retrieval data; it is not an authentication-only test database.
+- Neon is the selected database host for both development and production, using separate branches/databases. The local Docker database previously renamed to `portfolio` is not the selected development backend.
+- Prisma and Better Auth are implemented directly in the main repository; normal environment loading by application/tooling is allowed, without actively inspecting private `.env` files or their values.
+- Use separate development and production databases or Neon branches. Automated tests that reset or delete data must use a disposable database or branch, never the persistent development database.
+- No Neon environment has been provisioned or selected by the assistant. The user supplies configuration privately, without the assistant inspecting `.env` files or credentials.
+
 ## Phase 0: Confirm scope and content inputs
 
-- [ ] Confirm Better Auth and the proposed login/recovery methods.
+- [x] Confirm Better Auth and the proposed login/recovery methods.
 - [ ] Confirm Cloudinary for images and decide how CV documents will be stored and delivered.
 - [ ] Confirm OpenRouter, choose a suitable generation model, and agree usage/spending limits.
 - [ ] Choose an embedding provider/model separately if vector retrieval is needed; verify current availability and pricing during implementation.
@@ -72,12 +82,12 @@ Acceptance: Existing behaviour is preserved, required checks pass, and browser l
 
 ## Phase 2: Database and application foundation
 
-- [ ] Add Prisma with a compatible PostgreSQL driver/connection strategy for Neon and Vercel.
+- [x] Add Prisma with a compatible PostgreSQL driver/connection strategy for Neon and Vercel.
 - [ ] Define models for profile/settings, projects, skills, experience, education, certificates, media, CV metadata, and enquiries.
-- [ ] Add authentication models through the chosen auth integration.
+- [x] Add authentication models through the chosen auth integration.
 - [ ] Model stable slugs, draft/published state, ordering, featured projects, timestamps, and media relationships.
 - [ ] Design enquiry retention and deletion behaviour; keep private enquiries separate from public content.
-- [ ] Create reviewable migrations; apply them only to the user-authorized environment.
+- [ ] Let Prisma generate migrations from schema changes; review the generated output and apply only to the user-authorized environment.
 - [ ] Import approved existing content through an explicit, non-destructive process.
 - [ ] Document configuration variable names and setup steps without reading or writing `.env*` files.
 
@@ -87,7 +97,7 @@ Acceptance: The schema and migrations support approved features, development dat
 
 - [ ] Integrate Better Auth with Next.js, Prisma, and Neon after confirmation.
 - [ ] Provide a controlled process for the user to establish the single owner account; disable public and implicit signup paths.
-- [ ] Add login, logout, session expiry, password reset, and authenticator-app 2FA with recovery codes.
+- [ ] Verify login, logout, session expiry, and password reset with email and password.
 - [ ] Enforce owner authorization on protected pages, Route Handlers, Server Actions, and upload-signing endpoints.
 - [ ] Configure secure session cookies, trusted origins, and appropriate authentication rate limiting.
 - [ ] Ensure protected responses cannot be cached publicly.
@@ -181,3 +191,10 @@ Acceptance: The authorized release works on Vercel with documented operational s
 Record date, completed task, evidence, and remaining limitations here during implementation. Do not include secrets, private data, or raw sensitive logs.
 
 - 2026-11-04: Upgraded Next.js to 16.4.5 in source and lockfile, with React 19.3.1 and matching lint tooling. In an isolated copy without `.env*` files, ESLint, TypeScript, and production build passed; `/`, `/og`, `/robots.txt`, and `/sitemap.xml` returned HTTP 200. Open Graph now uses the Node.js runtime. Browser preview timed out, Vercel runtime and production remain unchecked, and workspace dependencies still need installation. No email was sent.
+- 2026-11-04: Prepared an incomplete Better Auth/Prisma prototype in the isolated `portfolio-auth` work directory. Prisma client generation, targeted lint, type checking, and production build passed without real credentials. No migration or account was created. Database-backed authentication tests and an authorization issue involving sessions created before two-factor enrollment remain unresolved; the prototype has not been integrated into the application. Local Docker was unavailable.
+- 2026-11-04 (supersedes the prototype status above): Authentication code and dependencies are now integrated in the main repository. The user clarified that normal environment loading is permitted and selected Neon for development as well as production. Added session-version triggers and a database-backed owner guard; two regression tests execute the SQL migrations in in-memory PostgreSQL and reject pre-enrollment, outdated, expired, and non-owner sessions. Main-repository type checking and production build passed. Neon configuration is not yet supplied, so live migrations, owner creation, email delivery, MFA/recovery, and browser acceptance remain pending. Setup instructions are in `docs/authentication.md`; no deployment or commit was made.
+- 2026-11-04 (migration workflow correction): Removed both migration SQL files and the manually added migration lockfile. Future migrations must be generated by Prisma from schema changes. Removed the regression test dependent on those SQL files and its in-memory database dependency. The session-version mechanism must be implemented at the application level and integration-tested before owner setup; default version-zero sessions are denied dashboard access. Earlier SQL regression results are historical, not evidence for the current implementation. No database changes were applied.
+- 2026-11-04: Replaced interactive owner creation with an environment-configured Prisma seed calling a seed-only Better Auth signup instance; public signup remains disabled. Admin routes use server page components with separate client forms. Seed and sign-in flows await Neon configuration, Prisma-generated migrations, and database-backed verification; MFA session versioning remains unfinished and dashboard access remains blocked by default.
+- 2026-11-04: Seed now creates its own Prisma client using DIRECT_URL and injects it into the seed-only Better Auth instance, with safe validation and stage-specific failure messages. Type checking and focused lint passed. The seed was not executed; the cause of the user's earlier failure is not yet confirmed.
+- 2026-11-04: Refreshed the authentication layout, login controls, and recovery-code presentation. Type checking, targeted lint, and the existing policy test passed. Browser/mobile visual verification and database-backed authentication tests remain outstanding. MFA session-version invalidation is still unimplemented; the existing fail-closed guard remains in place.
+- 2026-11-07: User chose owner email/password authentication. Removed MFA plugin, setup and challenge flow, and session-version checks. Retained MFA-related database schema pending separate cleanup. Live authentication verification remains outstanding.
