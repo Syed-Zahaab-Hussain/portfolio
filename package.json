@@ -16,14 +16,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@better-auth/prisma-adapter": "^1.7.15",
+    "@better-auth/prisma-adapter": "1.7.18",
     "@prisma/adapter-pg": "^7.10.1",
     "@prisma/client": "^7.10.1",
-    "better-auth": "^1.7.15",
+    "better-auth": "1.7.18",
     "dotenv": "^18.0.9",
     "lucide-react": "^0.562.0",
     "next": "16",
-    "nodemailer": "^9.0.1",
+    "nodemailer": "10.3.1",
     "pg": "^8.23.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
