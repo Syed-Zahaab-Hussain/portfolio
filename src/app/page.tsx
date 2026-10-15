@@ -5,8 +5,11 @@ import Portfolio from "@/components/client/Portfolio";
 import Contact from "@/components/client/Contact";
 import Footer from "@/components/server/Footer";
 import ScrollSpy from "@/components/client/ScrollSpy";
+import { getDb } from "@/lib/db";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+export default async function Home() {
+  const publishedProjects = await getDb().project.findMany({ where: { status: "PUBLISHED" }, select: { id: true, slug: true, title: true, summary: true, tech: true }, orderBy: { updatedAt: "desc" } });
   return (
     <div className="relative min-h-screen bg-[#050505] text-slate-200 selection:bg-purple-500/30">
 
@@ -40,7 +43,7 @@ export default function Home() {
             </section>
 
             <section id="portfolio" className="pt-20">
-              <Portfolio />
+              <Portfolio publishedProjects={publishedProjects} />
             </section>
 
             <section id="contact" className="pt-20">

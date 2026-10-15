@@ -7,8 +7,9 @@ import { Reveal } from '@/components/ui/Reveal';
 import { projects } from '@/data/projects';
 import { certificates } from '@/data/certificates';
 import { techStackItems } from '@/data/techStack';
+import Link from 'next/link';
 
-const Portfolio: React.FC = () => {
+const Portfolio: React.FC<{ publishedProjects: { id: string; slug: string; title: string; summary: string; tech: string[] }[] }> = ({ publishedProjects }) => {
   const [activeTab, setActiveTab] = useState<'projects' | 'certificates' | 'stack'>('projects');
 
   return (
@@ -65,6 +66,7 @@ const Portfolio: React.FC = () => {
       <div className="min-h-[400px]">
         {activeTab === 'projects' && (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {publishedProjects.map((project) => <div key={project.id} className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6"><div className="mb-6 flex h-40 items-center justify-center rounded-xl bg-violet-500/10 text-violet-300"><Code2 size={48} /></div><h3 className="text-xl font-bold text-white">{project.title}</h3><p className="my-4 text-gray-300">{project.summary}</p><div className="mb-5 flex flex-wrap gap-2">{project.tech.map((tech) => <span key={tech} className="rounded border border-white/10 px-2 py-1 text-xs">{tech}</span>)}</div><Link className="mt-auto text-violet-300" href={`/projects/${project.slug}`}>View project →</Link></div>)}
                 {projects.map((project, index) => (
                     <Reveal key={project.id} delay={index * 0.1} width="100%">
                         <div className="group rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">

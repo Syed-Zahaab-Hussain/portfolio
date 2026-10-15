@@ -108,6 +108,42 @@ Acceptance: Only the designated owner can administer content. Hiding UI or redir
 
 ## Phase 4: Media and admin dashboard
 
+### Phase 4A: Redesign the admin workspace before adding content features
+
+The dashboard currently links to Projects, and the list, editor, and preview each handle their own navigation. Make the existing draft-to-publish flow the centerpiece of a shared owner workspace. Complete this pass before adding media uploads or new content sections.
+
+#### Design and shared layout
+
+- [ ] Sketch the Overview, Projects list, and project editor at desktop and phone widths using the fields and states already in the app. Review the sketches before implementation. Use [Anthropic’s Frontend Design guide](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md) as a reference for visual hierarchy, typography, and purposeful motion.
+- [ ] Define shared semantic CSS tokens for canvas (`#101116`), surface (`#181A22`), border (`#30323D`), text (`#F4F4F6`), muted text (`#A4A7B4`), and violet accent (`#A78BFA`). Verify contrast for text, buttons, focus indicators, and statuses. Use a label alongside every status color.
+- [ ] Use the existing Inter typography, left-aligned headings, and a consistent spacing scale. Give the admin solid surfaces and subtle dividers. Reserve gradients and more expressive motion for the public portfolio.
+- [ ] Build a shared protected layout for the admin home, project list, editor, and private preview. Add a desktop sidebar with **Overview** and **Projects**, plus **View portfolio** and **Sign out** at the bottom. Highlight the current section, including on nested project routes.
+- [ ] Use a compact top bar and menu on mobile. Give the menu keyboard focus management and Escape dismissal, and close it after navigation. Show a breadcrumb on nested routes.
+- [ ] Keep login and password reset in their standalone auth layout and align their colors and controls with the new tokens. Keep server pages responsible for data loading and authorization. Use client components for interactive pieces such as the mobile menu and form feedback. Retain independent owner checks on protected data reads and mutations.
+
+#### Overview and Projects
+
+- [ ] Make **Continue editing** the primary section on Overview. Show recent drafts ordered by last update, with title, timestamp, and a direct editor link. Provide a **New project** action and a link to all projects. When there are no drafts, give the owner a clear way to start one.
+- [ ] Present Projects as a compact list with title, status, last updated, and edit action. Let rows stack on mobile without horizontal scrolling. Show a **New project** action and a useful empty state. Keep navigation limited to the sections that exist.
+
+#### Editor and private preview
+
+- [ ] Group title, summary, description, and technologies under the project content. Group slug, demo URL, and source URL separately. Explain auto-generated slugs and why the slug becomes read-only after first publication.
+- [ ] Make the workflow explicit. A new project starts with **Save draft** and requires only a title. After the first save, offer **Preview** and **Publish**. For published projects, label the save action **Save changes** and expose **Unpublish** separately. Make it clear that preview shows the last saved version and that saving changes to a published project updates the live site.
+- [ ] Show the current status beside the title. On desktop, keep save and publish controls easy to reach as the editor grows. On phones, ensure controls fit without covering fields or validation messages.
+- [ ] Return field-specific validation and recoverable save errors inline, preserve entered values, and show pending and success states. Before publishing, explain any missing required fields. Confirm unpublishing with copy that explains its effect on the public page.
+- [ ] Give the preview a clearly labeled private header and a **Back to editor** link. Reuse the public project presentation inside the preview and keep the owner check in place.
+- [ ] Handle slug collisions without a generic error and preserve the slug lock if edits and publishing happen concurrently. Verify those cases alongside the ordinary save flow.
+
+#### Review and acceptance
+
+- [ ] Review the Overview, Projects list, editor, auth screens, and preview at phone and desktop widths. Check keyboard navigation, focus visibility, reduced-motion behavior, long project titles, and the empty, loading, and error states.
+- [ ] On the development app, verify title-only draft creation, edits, private preview, publish, public card and detail visibility, unpublish, and sign-out. Check that signed-out and unauthorized requests cannot read drafts or invoke project mutations. Run lint, TypeScript, and a production build.
+
+Acceptance for Phase 4A. The owner can go from Overview to a draft, understand its saved and published states, and manage it on desktop or mobile. The redesign uses the existing schema and auth flow. Media, additional content sections, and the public visual refresh follow separately.
+
+### Phase 4B: Media and additional content management
+
 - [ ] Integrate the confirmed storage provider through a small interface for upload, delete, and delivery metadata.
 - [ ] Store provider identifiers, resource types, dimensions, alt text, and delivery references in PostgreSQL.
 - [ ] Validate file types and sizes; authorize signed uploads and keep provider secrets server-side.
@@ -121,6 +157,10 @@ Acceptance: The owner can maintain portfolio content without editing source file
 
 ## Phase 5: Public content and portfolio experience
 
+After the admin review, apply the shared visual palette to the public site in a separate pass.
+
+- [ ] Apply the shared canvas, typography, and violet accent to the navbar, hero, project cards, project details, contact section, and footer. Keep teal as an occasional public accent and reduce competing gradients.
+- [ ] Align public card typography, spacing, and actions across legacy and database-backed projects. Use subtle motion to direct attention to content and honor reduced-motion preferences.
 - [ ] Rewrite the hero/About around current, approved experience and availability; remove outdated or unsupported claims.
 - [ ] Group skills by area and distinguish practical experience from current learning.
 - [ ] Replace stock project and certificate imagery with approved assets.
@@ -198,3 +238,5 @@ Record date, completed task, evidence, and remaining limitations here during imp
 - 2026-11-04: Seed now creates its own Prisma client using DIRECT_URL and injects it into the seed-only Better Auth instance, with safe validation and stage-specific failure messages. Type checking and focused lint passed. The seed was not executed; the cause of the user's earlier failure is not yet confirmed.
 - 2026-11-04: Refreshed the authentication layout, login controls, and recovery-code presentation. Type checking, targeted lint, and the existing policy test passed. Browser/mobile visual verification and database-backed authentication tests remain outstanding. MFA session-version invalidation is still unimplemented; the existing fail-closed guard remains in place.
 - 2026-11-07: User chose owner email/password authentication. Removed MFA plugin, setup and challenge flow, and session-version checks. Retained MFA-related database schema pending separate cleanup. Live authentication verification remains outstanding.
+- 2026-11-07: Added the project schema and initial admin draft/editor, owner-only preview, published detail route, and public project cards. Prisma client generation, schema validation, targeted lint, type checking, and an initial build passed. The project migration has not been generated or applied. Live create/edit/publish/unpublish and authorization checks remain unverified. Improve inline validation and collision/concurrency handling before calling the project workflow complete.
+- 2026-11-07: The Prisma-generated `add_projects` migration exists. Browser testing against the running development app verified owner login, saving a title-only draft, its private preview, draft public 404, editing and publishing, the public detail page and portfolio card, unpublishing, public 404 afterward, and signed-out preview redirect. A clearly labelled test project remains as a draft. Validation error presentation and slug-collision concurrency handling still need work.
