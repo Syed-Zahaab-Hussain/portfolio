@@ -1,23 +1,17 @@
-import { Code2, Award, Globe } from 'lucide-react';
-import { Stat } from '@/types';
+import { BriefcaseBusiness, Code2, Handshake } from "lucide-react";
+import { projects } from "@/data/projects";
+import { Stat } from "@/types";
 
 export const stats: Stat[] = [
+  { icon: Code2, value: String(projects.length), label: "Featured Projects" },
   {
-    icon: Code2,
-    value: '4',
-    label: 'TOTAL PROJECTS',
-    subLabel: 'Innovative web & mobile solutions crafted'
+    icon: BriefcaseBusiness,
+    label: "Internship Experience",
+    subLabel: "PEC internship programme, Apr–Oct 2026",
   },
   {
-    icon: Award,
-    value: '3',
-    label: 'CERTIFICATES',
-    subLabel: 'Professional skills validated'
-  },
-  {
-    icon: Globe,
-    value: '3',
-    label: 'YEARS OF EXPERIENCE',
-    subLabel: 'Continuous learning journey'
+    icon: Handshake,
+    label: "Freelance Availability",
+    subLabel: "Open to projects through Upwork and Fiverr",
   },
 ];

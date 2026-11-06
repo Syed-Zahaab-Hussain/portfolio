@@ -7,7 +7,7 @@ import { heroTechStack } from "@/data/techStack";
 
 const Hero: React.FC = () => {
   const [text, setText] = useState("");
-  const fullText = "Software Engineering. Student";
+  const fullText = "React, Next.js, Node.js & PostgreSQL";
 
   useEffect(() => {
     if (text.length >= fullText.length) {
@@ -42,9 +42,8 @@ const Hero: React.FC = () => {
         </div>
 
         <p className="text-gray-300 text-lg md:text-xl max-w-2xl leading-relaxed">
-          Crafting the next generation of web applications. I leverage the
-          React & Node.js ecosystem to build secure, data-driven platforms
-          that are fast by default and accessible to everyone.
+          I build full-stack web applications, from inventory and checkout systems
+          to administration tools and e-commerce storefronts.
         </p>
 
         {/* Tech Stack Pills */}

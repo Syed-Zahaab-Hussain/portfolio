@@ -11,7 +11,9 @@ export const techStackItems: TechStackItem[] = [
   { name: 'Tailwind CSS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg' },
   { name: 'Express JS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg', invert: true },
   { name: 'Node JS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
-  { name: 'React + Native', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+  { name: 'Next.js', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg', invert: true },
+  { name: 'Prisma', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg', invert: true },
+  { name: 'React', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
   { name: 'MongoDB', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg' },
   { name: 'JWT', icon: 'https://jwt.io/img/pic_logo.svg' },
   { name: 'PostgreSQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg' },
@@ -21,11 +23,11 @@ export const techStackItems: TechStackItem[] = [
 
 // Hero tech stack pills
 export const heroTechStack = [
-  "Nextjs",
+  "Next.js",
   "React",
   "TypeScript",
   "Node.js",
   "PostgreSQL",
-  "MongoDB",
+  "Prisma",
   "Tailwind",
 ];

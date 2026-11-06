@@ -3,17 +3,20 @@ import { LucideIcon } from 'lucide-react';
 export interface Project {
   id: number;
   title: string;
+  slug: string;
+  summary: string;
   description: string;
   image: string;
   tech: string[];
-  demoLink: string;
+  demoLink?: string;
   repoLink?: string;
 }
 
 export interface Certificate {
   id: number;
   title: string;
-  image: string;
+  image?: string;
+  url?: string;
 }
 
 export interface NavItem {
@@ -23,7 +26,7 @@ export interface NavItem {
 
 export interface Stat {
   icon: LucideIcon;
-  value: string;
+  value?: string;
   label: string;
   subLabel?: string;
 }

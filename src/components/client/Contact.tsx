@@ -5,6 +5,11 @@ import { Send, Mail, User, MessageSquare, Share2 } from 'lucide-react';
 import { Reveal } from '@/components/ui/Reveal';
 import { socialLinks } from '@/data/social';
 
+const freelanceLinks = [
+  { label: 'Upwork', href: 'https://www.upwork.com/freelancers/~014ca7e8fb483e2a60?mp_source=share' },
+  { label: 'Fiverr', href: 'https://www.fiverr.com/s/7j1pRB1' },
+];
+
 const Contact: React.FC = () => {
     const [formState, setFormState] = useState({
         name: '',
@@ -180,6 +185,17 @@ const Contact: React.FC = () => {
             <div className="flex items-center gap-3 mb-6">
               <span className="w-6 h-1 bg-indigo-500 rounded-full"></span>
               <h3 className="text-lg font-bold text-white">Connect With Me</h3>
+            </div>
+
+            <div className="mb-6">
+              <p className="mb-3 text-sm text-gray-300">Available for freelance projects</p>
+              <div className="flex flex-wrap gap-3">
+                {freelanceLinks.map(({ label, href }) => (
+                  <a key={label} href={href} target="_blank" rel="noreferrer" className="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-white hover:border-purple-500/50">
+                    {label}
+                  </a>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-3">
